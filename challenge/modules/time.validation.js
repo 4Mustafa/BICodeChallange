@@ -72,7 +72,9 @@ function closestDate(timestamp) {
     // grabs the hour from the timeStamp
     const dateAsNum = Number(checkDate)
     // sets the hours as a Number
-    const yesterday = timestamp
+    // var yesterday = timestamp --- this crashes the testing
+    var yesterday = new Date()
+
     yesterday.setDate(yesterday.getDate() - 1)
     //  gets yesterdays date
     if (dateAsNum < 12) {

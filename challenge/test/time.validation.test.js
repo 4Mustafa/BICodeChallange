@@ -15,7 +15,10 @@ describe('time validation', () => {
         // YOUR CODE HERE
         test('it returns false if time passed is mot within 30 seconds', (done) => {
             const date = new Date();
-            date.setSeconds(date.getSeconds() + 30);
+            const seconds = timestamp.slice(17, 19)
+            // grabs the seconds from timeStamp
+            const newNumber = Number(seconds) + 40;
+            date.setSeconds(newNumber);
             expect(closeToNow(date)).toBe(false);
             done();
         });
@@ -26,6 +29,7 @@ describe('time validation', () => {
             const expectedOutput = '2020-06-30';
             expect(closestDate(inputTime)).toBe(expectedOutput);
             done();
+            //  I believe that 16:03 is after noon (4:03pm) so this should fail
         });
         // YOUR CODE HERE
         test('it returns the current day if after noon CST', (done) => {
@@ -39,6 +43,7 @@ describe('time validation', () => {
             const expectedOutput = '2020-06-30';
             expect(closestDate(inputTime)).toBe(expectedOutput);
             done();
+            // i expect this test to fail 
         });
     });
     describe('format timestamp', () => {
