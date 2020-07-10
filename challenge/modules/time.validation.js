@@ -4,28 +4,20 @@ const date = new Date();
 const timestamp = date.toISOString();
 const newTime = timestamp.slice(17, 19)
 const newNumber = Number(newTime)
-console.log(timestamp);
-console.log(newNumber);
-console.log("plus 30", newNumber + 30);
-console.log("minus 30", newNumber - 30);
 const newDate = timestamp.slice(0, 10)
 const dateAsNum = Number(newDate)
 
 
-const yesterday = new Date()
-yesterday.setDate(yesterday.getDate() - 1)
-
-console.log('date is', newDate);
-
-console.log('D-A-N', dateAsNum);
 
 
-const inputTime = '2020-07-01T16:03:18.021Z'
+const timeDate = moment(timestamp).format('hh a').toString()
+const inputTime = '2020-07-01T17:03:18.021Z'
+let yesterday = moment(inputTime).subtract(1, 'day')
+console.log('yesterday is', yesterday.format('a'))
 
-console.log('closest date is', closestDate(inputTime));
 
 
-console.log('F-T-S is', formatTimestamp(inputTime, 'US/Central'));
+// console.log('closest is', closestDate(inputTime));
 
 
 
@@ -39,19 +31,21 @@ console.log('F-T-S is', formatTimestamp(inputTime, 'US/Central'));
  * @returns {Boolean} whether the timestamp is within 30 seconds of now
  */
 function closeToNow(timestamp) {
-    const seconds = timestamp.slice(17, 19)
-    // grabs the seconds from timeStamp
-    const newNumber = Number(seconds);
-    // sets the seconds as a number 
-    const plusThirty = newNumber + 30;
-    const minusThirty = newNumber - 30;
-    if (newNumber > plusThirty || newNumber < minusThirty) {
-        // checks if the number in seconds is within 30sec of the timeStamp
-        return false
-    } else {
+    const now = new Date();
+    const plusThirty = new Date(now.getTime() + 30000);
+    // sets a time thats 30 seconds from now 
+    const minusThirty = new Date(now.getTime() - 30000);
+    // sets a time that was 30 seconds ago
+    const futureTime = moment(plusThirty).format('hhmmss').toString()
+    const pastTime = moment(minusThirty).format('hhmmss').toString()
+    const checkTime = moment(timestamp).format('hhmmss').toString()
+    if (Number(checkTime) < Number(futureTime) && Number(checkTime) > Number(pastTime)) {
+        // checks to see if the passed time is within 30 seconds of the current time
         return true
-    }
+    } else return false
 }
+
+
 
 /**
  * Returns the previous days date if before 12pm CST or the
@@ -66,24 +60,20 @@ function closeToNow(timestamp) {
  */
 function closestDate(timestamp) {
     // YOUR CODE HERE
-    const currentDate = timestamp.slice(0, 10)
-    // graba the date from the timeStamp
-    const checkDate = timestamp.slice(11, 13)
-    // grabs the hour from the timeStamp
-    const dateAsNum = Number(checkDate)
-    // sets the hours as a Number
-    // var yesterday = timestamp --- this crashes the testing
-    var yesterday = new Date()
-
-    yesterday.setDate(yesterday.getDate() - 1)
-    //  gets yesterdays date
-    if (dateAsNum < 12) {
-        // If the hours is smaller than 12 then its before 12pm
-        return yesterday
+    let amOrPm = moment(timestamp).format('a')
+    // grabs the am or pm from the timestamp
+    let hrs = moment(timestamp).format('h')
+    // grabs the hours from the timestamp
+    let currentDay = moment(timestamp).format('YYYY-MM-DD')
+    // formats the time stamp
+    let yesterday = moment(inputTime).subtract(1, 'day')
+    // grabs one day before the passed timestamp
+    if (Number(hrs) <= 12 && amOrPm === 'am') {
+        // checks to see if the passed time is before 12pm
+        return yesterday.format('YYYY-MM-DD')
     } else {
-        return currentDate
+        return currentDay
     }
-
 }
 
 /**
@@ -97,7 +87,7 @@ function closestDate(timestamp) {
  */
 function formatTimestamp(timestamp, timezone) {
     // YOUR CODE HERE 'July 1st, 2020 at 11:03 am';
-    const newDate = moment(timestamp,).tz(timezone).format('MMMM Do, YYYY [at] hh:mm a').toString()
+    const newDate = moment(timestamp,).tz(timezone).format('MMMM Do, YYYY [at] hh:mm:ss a').toString()
     // formats the timestamp into the correct time zone and date format
     return newDate
 }
